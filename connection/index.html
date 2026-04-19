@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>let's test our connection ♡</title>
+<meta name="description" content="a tiny two-question test. if both are true, i'm in trouble." />
+<meta property="og:title" content="let's test our connection ♡" />
+<meta property="og:description" content="two checkboxes between you and the truth." />
+<meta property="og:type" content="website" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;1,400;1,600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --cream: #fff5ec;
+    --blush: #fadfd0;
+    --peach: #f5b690;
+    --rust:  #c46b42;
+    --copper:#b45a3a;
+    --auburn:#8b3a1c;
+    --burgundy:#6d1b2e;
+    --ink:   #3d1f2a;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+  html, body {
+    height:100%;
+    overflow:hidden;
+    font-family:'Fraunces', Georgia, serif;
+    color:var(--ink);
+    background:
+      radial-gradient(ellipse at 25% 15%, var(--blush), transparent 60%),
+      radial-gradient(ellipse at 85% 85%, var(--peach), transparent 55%),
+      linear-gradient(180deg, var(--cream), #f7dcc2);
+    background-attachment:fixed;
+  }
+
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.35'/></svg>");
+    opacity:0.2;
+    mix-blend-mode:multiply;
+    pointer-events:none;
+    z-index:1;
+  }
+
+  .stage {
+    position:relative;
+    height:100dvh;
+    width:100%;
+    display:grid;
+    place-items:center;
+    padding:1.5rem;
+    z-index:2;
+  }
+
+  .scene {
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    max-width:580px;
+    width:100%;
+  }
+  .scene.active {
+    display:flex;
+    animation:fadeUp 0.75s cubic-bezier(.22,.8,.22,1) both;
+  }
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(16px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  .kicker {
+    font-family:'Caveat', cursive;
+    font-size:1.4rem;
+    color:var(--copper);
+    letter-spacing:0.02em;
+    margin-bottom:0.5rem;
+    opacity:0.9;
+  }
+
+  h1 {
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-weight:400;
+    font-size:clamp(2rem, 7vw, 3.3rem);
+    line-height:1.15;
+    letter-spacing:-0.015em;
+    margin-bottom:1.2rem;
+  }
+  h1 em {
+    font-family:'Caveat', cursive;
+    font-style:normal;
+    font-weight:700;
+    color:var(--copper);
+    font-size:1.15em;
+  }
+
+  p.lead {
+    font-size:1.02rem;
+    line-height:1.6;
+    max-width:32ch;
+    margin:0 auto 2rem;
+    color:rgba(61,31,42,0.78);
+  }
+
+  .btn {
+    font-family:'Fraunces', serif;
+    font-size:1rem;
+    font-weight:500;
+    letter-spacing:0.02em;
+    background:var(--ink);
+    color:var(--cream);
+    border:none;
+    padding:0.95rem 2.1rem;
+    border-radius:999px;
+    cursor:pointer;
+    box-shadow:0 10px 28px -12px rgba(139,58,28,0.55);
+    transition:transform 0.2s ease, box-shadow 0.2s ease, opacity 0.5s ease;
+  }
+  .btn:hover  { transform:translateY(-2px); box-shadow:0 14px 34px -12px rgba(139,58,28,0.7); }
+  .btn:active { transform:translateY(0); }
+  .btn.ghost  { background:transparent; color:var(--ink); border:1.5px solid rgba(61,31,42,0.25); box-shadow:none; }
+
+  /* ========= checklist ========= */
+  .checklist {
+    list-style:none;
+    margin:0 0 2rem;
+    padding:0;
+    text-align:left;
+    display:inline-flex;
+    flex-direction:column;
+    gap:1.1rem;
+  }
+  .check-item {
+    display:flex;
+    align-items:center;
+    gap:1rem;
+    font-family:'Fraunces', serif;
+    font-size:clamp(1.05rem, 3.6vw, 1.35rem);
+    font-style:italic;
+    color:rgba(61,31,42,0.55);
+    transition:color 0.6s ease, transform 0.3s ease;
+    cursor:pointer;
+    user-select:none;
+    padding:0.3rem 0.6rem;
+    border-radius:10px;
+  }
+  .check-item:hover:not(.ticked) {
+    color:rgba(61,31,42,0.85);
+    transform:translateX(2px);
+  }
+  .check-item:hover:not(.ticked) .box {
+    border-color:var(--copper);
+    background:rgba(196,107,66,0.04);
+  }
+  .check-item .box {
+    width:30px; height:30px;
+    border:2px solid rgba(61,31,42,0.28);
+    border-radius:8px;
+    flex-shrink:0;
+    display:grid;
+    place-items:center;
+    transition:border-color 0.5s ease, background 0.5s ease;
+  }
+  .check-item .tick {
+    width:22px; height:22px;
+  }
+  .check-item .tick path {
+    fill:none;
+    stroke:var(--copper);
+    stroke-width:3;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    stroke-dasharray:30;
+    stroke-dashoffset:30;
+    transition:stroke-dashoffset 0.65s cubic-bezier(.3,.7,.3,1);
+  }
+  .check-item.ticked {
+    color:var(--ink);
+    transform:translateX(4px);
+  }
+  .check-item.ticked .box {
+    border-color:var(--copper);
+    background:rgba(196,107,66,0.08);
+  }
+  .check-item.ticked .tick path {
+    stroke-dashoffset:0;
+  }
+
+  #andBtn {
+    opacity:0;
+    pointer-events:none;
+    transform:translateY(8px);
+    transition:opacity 0.6s ease, transform 0.6s ease;
+  }
+  #andBtn.show {
+    opacity:1;
+    pointer-events:auto;
+    transform:translateY(0);
+  }
+
+  /* ========= reveal ========= */
+  .big {
+    font-family:'Caveat', cursive;
+    font-weight:700;
+    font-size:clamp(2.4rem, 10vw, 4.6rem);
+    color:var(--auburn);
+    line-height:1.05;
+    margin:0.5rem 0 1.2rem;
+    text-shadow:0 4px 18px rgba(139,58,28,0.18);
+  }
+  .big .name {
+    font-size:1.18em;
+    color:var(--copper);
+    letter-spacing:-0.01em;
+  }
+  .big .heart {
+    display:inline-block;
+    color:var(--copper);
+    animation:pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { transform:scale(1); }
+    50%     { transform:scale(1.18); }
+  }
+
+  .signature {
+    font-family:'Caveat', cursive;
+    font-size:1.5rem;
+    color:var(--copper);
+    margin-top:1.2rem;
+  }
+
+  .hearts-layer {
+    position:fixed; inset:0;
+    pointer-events:none;
+    z-index:3;
+    overflow:hidden;
+  }
+  .heart-float {
+    position:absolute;
+    bottom:-40px;
+    animation:rise linear forwards;
+    opacity:0;
+    will-change:transform, opacity;
+  }
+  @keyframes rise {
+    0%   { transform:translateY(0) rotate(0); opacity:0; }
+    10%  { opacity:0.9; }
+    100% { transform:translateY(-110vh) rotate(40deg); opacity:0; }
+  }
+
+  footer {
+    position:fixed;
+    bottom:0.9rem;
+    left:0; right:0;
+    text-align:center;
+    font-family:'Caveat', cursive;
+    font-size:0.95rem;
+    color:rgba(61,31,42,0.45);
+    z-index:2;
+    pointer-events:none;
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+
+  <!-- ====== SCENE 1: setup ====== -->
+  <section class="scene active" id="s1">
+    <div class="kicker">a little experiment</div>
+    <h1>Let's test our <em>connection</em>.</h1>
+    <p class="lead">Two tiny checkboxes between you and the truth. Fair warning — if both are true, I'm doomed.</p>
+    <button class="btn" onclick="go('s2')">Let's go &rarr;</button>
+  </section>
+
+  <!-- ====== SCENE 2: checklist ====== -->
+  <section class="scene" id="s2">
+    <div class="kicker">the test</div>
+    <h1>Tick what's <em>true</em>.</h1>
+    <p class="lead" style="margin-bottom:1.4rem">tap each one that applies to you ↓</p>
+
+    <ul class="checklist">
+      <li class="check-item" id="c1" role="button" tabindex="0">
+        <span class="box">
+          <svg class="tick" viewBox="0 0 24 24"><path d="M5 12 L10 17 L19 7"/></svg>
+        </span>
+        <span>you're a redhead</span>
+      </li>
+      <li class="check-item" id="c2" role="button" tabindex="0">
+        <span class="box">
+          <svg class="tick" viewBox="0 0 24 24"><path d="M5 12 L10 17 L19 7"/></svg>
+        </span>
+        <span>you made me eat kale chane ki sabji</span>
+      </li>
+    </ul>
+
+    <button class="btn" id="andBtn" onclick="go('s3')">…and?</button>
+  </section>
+
+  <!-- ====== SCENE 3: reveal ====== -->
+  <section class="scene" id="s3">
+    <div class="kicker">then, simply —</div>
+    <div class="big">
+      I love you more,<br/>
+      <span class="name">Vidhiiiiiii</span> <span class="heart">♡</span>
+    </div>
+    <p class="lead">Yeah. That's the theory.<br/>Holds up under every test so far.</p>
+    <button class="btn ghost" onclick="restart()">Run it again</button>
+    <div class="signature">— yours, always ♡</div>
+  </section>
+
+</div>
+
+<div class="hearts-layer" id="hearts"></div>
+<footer>made with ♡ &nbsp;·&nbsp; only for you</footer>
+
+<script>
+(function(){
+
+  window.go = function(id){
+    document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+    const el = document.getElementById(id);
+    el.classList.add('active');
+
+    if (id === 's2') {
+      // reset on entering / replaying
+      document.querySelectorAll('.check-item').forEach(c => c.classList.remove('ticked'));
+      document.getElementById('andBtn').classList.remove('show');
+    }
+
+    if (id === 's3') burst();
+  };
+
+  window.restart = function(){ go('s1'); };
+
+  // manual tick handlers
+  function updateBtn(){
+    const c1 = document.getElementById('c1').classList.contains('ticked');
+    const c2 = document.getElementById('c2').classList.contains('ticked');
+    const btn = document.getElementById('andBtn');
+    if (c1 && c2) btn.classList.add('show');
+    else btn.classList.remove('show');
+  }
+
+  document.querySelectorAll('.check-item').forEach(item => {
+    const toggle = (e) => {
+      if (e) { e.preventDefault(); e.stopPropagation(); }
+      item.classList.toggle('ticked');
+      updateBtn();
+    };
+    item.addEventListener('click', toggle);
+    item.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') toggle(e);
+    });
+  });
+
+  // floating hearts
+  const chars  = ['♡','❥','♥','✿','♡'];
+  const colors = ['#c46b42','#b45a3a','#8b3a1c','#f5b690','#c46b42'];
+
+  function spawn(fast){
+    const h = document.createElement('div');
+    h.className = 'heart-float';
+    h.textContent = chars[(Math.random()*chars.length)|0];
+    h.style.left  = (Math.random()*100) + '%';
+    h.style.fontSize = (0.95 + Math.random()*1.8) + 'rem';
+    h.style.color = colors[(Math.random()*colors.length)|0];
+    h.style.animationDuration = ((fast ? 4 : 7) + Math.random()*5) + 's';
+    document.getElementById('hearts').appendChild(h);
+    setTimeout(() => h.remove(), 13000);
+  }
+  setInterval(spawn, 620);
+
+  function burst(){
+    for (let i = 0; i < 36; i++) setTimeout(() => spawn(true), i*35);
+  }
+})();
+</script>
+
+</body>
+</html>
