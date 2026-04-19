@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>a tiny sorry ♡</title>
+<meta name="description" content="okay, we need to talk. just tap through." />
+<meta property="og:title" content="a tiny sorry ♡" />
+<meta property="og:description" content="okay, we need to talk. just tap through." />
+<meta property="og:type" content="website" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;1,400;1,600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --cream: #f9efe8;       /* warm off-white */
+    --blush: #ead0d6;       /* soft mauve */
+    --peach: #e0b4a5;       /* warm dusty */
+    --rose:  #c89bb2;       /* dusty rose */
+    --rose-deep: #8a4a6a;   /* muted plum */
+    --burgundy: #5c2f40;    /* wine */
+    --gold: #c8954a;
+    --ink: #32212a;         /* dark plum-ink */
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+  html, body {
+    height:100%;
+    overflow:hidden;
+    font-family:'Fraunces', Georgia, serif;
+    color:var(--ink);
+    background:
+      radial-gradient(ellipse at 30% 20%, var(--blush), transparent 60%),
+      radial-gradient(ellipse at 80% 80%, var(--peach), transparent 55%),
+      linear-gradient(180deg, var(--cream), #e4c9cc);
+    background-attachment:fixed;
+  }
+
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.35'/></svg>");
+    opacity:0.18;
+    mix-blend-mode:multiply;
+    pointer-events:none;
+    z-index:1;
+  }
+
+  .stage {
+    position:relative;
+    height:100dvh;
+    width:100%;
+    display:grid;
+    place-items:center;
+    padding:1.5rem;
+    z-index:2;
+  }
+
+  .scene {
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    max-width:560px;
+    width:100%;
+  }
+  .scene.active {
+    display:flex;
+    animation:fadeUp 0.75s cubic-bezier(.22,.8,.22,1) both;
+  }
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(16px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  .kicker {
+    font-family:'Caveat', cursive;
+    font-size:1.4rem;
+    color:var(--rose-deep);
+    letter-spacing:0.02em;
+    margin-bottom:0.5rem;
+    opacity:0.9;
+  }
+
+  h1 {
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-weight:400;
+    font-size:clamp(2rem, 7vw, 3.3rem);
+    line-height:1.12;
+    letter-spacing:-0.015em;
+    margin-bottom:1.2rem;
+  }
+  h1 em {
+    font-family:'Caveat', cursive;
+    font-style:normal;
+    font-weight:700;
+    color:var(--rose-deep);
+    font-size:1.18em;
+  }
+
+  p.lead {
+    font-size:1.02rem;
+    line-height:1.6;
+    max-width:32ch;
+    margin:0 auto 2rem;
+    color:rgba(61,31,42,0.78);
+  }
+
+  .btn {
+    font-family:'Fraunces', serif;
+    font-size:1rem;
+    font-weight:500;
+    letter-spacing:0.02em;
+    background:var(--ink);
+    color:var(--cream);
+    border:none;
+    padding:0.95rem 2.1rem;
+    border-radius:999px;
+    cursor:pointer;
+    box-shadow:0 10px 28px -12px rgba(109,27,46,0.55);
+    transition:transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .btn:hover  { transform:translateY(-2px); box-shadow:0 14px 34px -12px rgba(109,27,46,0.7); }
+  .btn:active { transform:translateY(0); }
+  .btn.accent { background:var(--rose-deep); }
+  .btn.ghost  { background:transparent; color:var(--ink); border:1.5px solid rgba(61,31,42,0.25); box-shadow:none; }
+
+  .choice {
+    display:flex;
+    gap:1rem;
+    flex-wrap:wrap;
+    justify-content:center;
+    position:relative;
+    min-height:64px;
+    margin-top:0.2rem;
+  }
+  #yesBtn { transition:transform 0.25s ease; }
+  #noBtn  { transition:transform 0.4s cubic-bezier(.2,.8,.2,1); }
+
+  .note {
+    margin-top:1.5rem;
+    font-family:'Caveat', cursive;
+    font-size:1.15rem;
+    color:rgba(61,31,42,0.55);
+    transition:opacity 0.3s ease;
+  }
+
+  /* final reveal */
+  .big {
+    font-family:'Caveat', cursive;
+    font-weight:700;
+    font-size:clamp(2.6rem, 11vw, 4.8rem);
+    color:var(--rose-deep);
+    line-height:1.05;
+    margin:0.5rem 0 1.2rem;
+    text-shadow:0 4px 18px rgba(178,65,101,0.18);
+  }
+  .big .heart {
+    display:inline-block;
+    animation:pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { transform:scale(1); }
+    50%     { transform:scale(1.18); }
+  }
+
+  .signature {
+    font-family:'Caveat', cursive;
+    font-size:1.5rem;
+    color:var(--rose-deep);
+    margin-top:1.2rem;
+  }
+
+  .hearts-layer {
+    position:fixed; inset:0;
+    pointer-events:none;
+    z-index:3;
+    overflow:hidden;
+  }
+  .heart-float {
+    position:absolute;
+    bottom:-40px;
+    animation:rise linear forwards;
+    opacity:0;
+    will-change:transform, opacity;
+  }
+  @keyframes rise {
+    0%   { transform:translateY(0) rotate(0); opacity:0; }
+    10%  { opacity:0.9; }
+    100% { transform:translateY(-110vh) rotate(40deg); opacity:0; }
+  }
+
+  footer {
+    position:fixed;
+    bottom:0.9rem;
+    left:0; right:0;
+    text-align:center;
+    font-family:'Caveat', cursive;
+    font-size:0.95rem;
+    color:rgba(61,31,42,0.45);
+    z-index:2;
+    pointer-events:none;
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+
+  <!-- ====== SCENE 1: are you mad ====== -->
+  <section class="scene active" id="s1">
+    <div class="kicker">be honest with me —</div>
+    <h1>Are you <em>mad</em> at me?</h1>
+    <p class="lead">I can take it. Just tap one. (Honest answers only.)</p>
+    <div class="choice">
+      <!-- Yes runs away. Only No is allowed. -->
+      <button class="btn ghost" id="yesBtn"
+              onmouseover="runAway(event)" onfocus="runAway(event)"
+              ontouchstart="runAway(event)" onclick="runAway(event)">Yes</button>
+      <button class="btn accent" id="noBtn" onclick="go('s2')">No</button>
+    </div>
+    <div class="note" id="teaseNote" style="opacity:0">&nbsp;</div>
+  </section>
+
+  <!-- ====== SCENE 2: will you go out ====== -->
+  <section class="scene" id="s2">
+    <div class="kicker">phew. okay then —</div>
+    <h1>Good answer. One more thing —<br/>Will you <em>go out</em> with me?</h1>
+    <p class="lead">I know a place. You'll like it. Promise.</p>
+    <div class="choice">
+      <button class="btn accent" onclick="finish('yes')">Yes</button>
+      <button class="btn" onclick="finish('call')">Call me</button>
+    </div>
+  </section>
+
+  <!-- ====== SCENE 3: ending (content swapped) ====== -->
+  <section class="scene" id="s3">
+    <div class="kicker" id="endKicker">okay then —</div>
+    <div class="big" id="endBig">—</div>
+    <p class="lead" id="endLead">—</p>
+    <button class="btn ghost" onclick="go('s1')">Start over</button>
+    <div class="signature">— yours, sheepishly ♡</div>
+  </section>
+
+</div>
+
+<div class="hearts-layer" id="hearts"></div>
+<footer>made with ♡ &nbsp;·&nbsp; please forgive me</footer>
+
+<script>
+(function(){
+  const teases = [
+    "uh uh — wrong button.",
+    "try the other one.",
+    "come onnn, the correct answer.",
+    "you know which one to pick.",
+    "(i need you to say no)",
+    "okay, last chance — say no."
+  ];
+  let teaseCount = 0;
+
+  window.go = function(id){
+    document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if (id === 's1') resetNo();
+  };
+
+  function resetNo(){
+    const yes = document.getElementById('yesBtn');
+    const no  = document.getElementById('noBtn');
+    yes.style.transform = 'translate(0,0)';
+    no.style.transform  = 'scale(1)';
+    document.getElementById('teaseNote').style.opacity = 0;
+    teaseCount = 0;
+  }
+
+  window.runAway = function(e){
+    if (e && e.preventDefault) e.preventDefault();
+    const btn = document.getElementById('yesBtn');   // the one that runs
+    const stay = document.getElementById('noBtn');   // the one that grows
+    const maxX = Math.min(window.innerWidth, 520) / 2 - 70;
+    const maxY = 150;
+    const x = (Math.random() * 2 - 1) * maxX;
+    const y = (Math.random() * 2 - 1) * maxY - 20;
+    const rot = (Math.random() * 20 - 10) | 0;
+    btn.style.transform = `translate(${x}px, ${y}px) rotate(${rot}deg)`;
+
+    const scale = 1 + Math.min(teaseCount, 6) * 0.06;
+    stay.style.transform = `scale(${scale})`;
+
+    const note = document.getElementById('teaseNote');
+    if (teaseCount < teases.length) {
+      note.textContent = teases[teaseCount];
+      note.style.opacity = 0.78;
+    }
+    teaseCount++;
+  };
+
+  // ending branches
+  window.finish = function(choice){
+    const k = document.getElementById('endKicker');
+    const b = document.getElementById('endBig');
+    const l = document.getElementById('endLead');
+
+    if (choice === 'yes') {
+      k.textContent = "yes. okay —";
+      b.innerHTML   = `Text me the<br/>time &amp; place <span class="heart">♡</span>`;
+      l.innerHTML   = `Dealer's choice. Surprise me —<br/>I'll be there.`;
+    } else {
+      k.textContent = "okay then —";
+      b.innerHTML   = `Waiting for you<br/>to call me, baby <span class="heart">♡</span>`;
+      l.innerHTML   = `I'll be right here. No rush —<br/>I'll pick up the second it rings.`;
+    }
+    go('s3');
+    burst();
+  };
+
+  // floating hearts
+  const chars  = ['♡','❥','♥','✿','♡'];
+  const colors = ['#c89bb2','#c8954a','#8a4a6a','#e0b4a5','#c89bb2'];
+
+  function spawn(fast){
+    const h = document.createElement('div');
+    h.className = 'heart-float';
+    h.textContent = chars[(Math.random()*chars.length)|0];
+    h.style.left  = (Math.random()*100) + '%';
+    h.style.fontSize = (0.95 + Math.random()*1.8) + 'rem';
+    h.style.color = colors[(Math.random()*colors.length)|0];
+    h.style.animationDuration = ((fast ? 4 : 7) + Math.random()*5) + 's';
+    document.getElementById('hearts').appendChild(h);
+    setTimeout(() => h.remove(), 13000);
+  }
+  setInterval(spawn, 620);
+
+  function burst(){
+    for (let i = 0; i < 36; i++) setTimeout(() => spawn(true), i*35);
+  }
+})();
+</script>
+
+</body>
+</html>
